@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>A Special Surprise For You 💕</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Montserrat:wght@200;300;400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream: #fdf8f2;
+      --blush: #f0c8b8;
+      --rose: #c97b6e;
+      --deep: #2a1a15;
+      --gold: #c9a96e;
+      --gold-light: #e8d4a8;
+      --text: #3a2520;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--cream);
+      color: var(--text);
+      font-family: 'Cormorant Garamond', serif;
+      overflow-x: hidden;
+      cursor: default;
+    }
+
+    /* ── PARTICLES ── */
+    #particles {
+      position: fixed; inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .petal {
+      position: absolute;
+      width: 8px; height: 8px;
+      border-radius: 50% 0 50% 0;
+      opacity: 0;
+      animation: fall linear infinite;
+    }
+    @keyframes fall {
+      0%   { transform: translateY(-20px) rotate(0deg); opacity: 0.7; }
+      100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+    }
+
+    /* ── LOCK SCREEN ── */
+    #lock {
+      position: fixed; inset: 0;
+      background: var(--deep);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      z-index: 100;
+      transition: opacity 0.8s ease, visibility 0.8s;
+    }
+    #lock.hidden { opacity: 0; visibility: hidden; }
+
+    #lock .lock-heart {
+      font-size: 4rem;
+      animation: pulse 1.5s ease-in-out infinite;
+      margin-bottom: 2rem;
+    }
+    @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.15)} }
+
+    #lock p {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem;
+      color: var(--gold-light);
+      letter-spacing: 0.15em;
+      margin-bottom: 2.5rem;
+      font-style: italic;
+    }
+
+    #lock input {
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid var(--gold);
+      color: var(--gold-light);
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1rem;
+      font-weight: 200;
+      letter-spacing: 0.3em;
+      text-align: center;
+      padding: 0.5rem 1rem;
+      width: 220px;
+      outline: none;
+      margin-bottom: 2rem;
+    }
+    #lock input::placeholder { color: rgba(201,169,110,0.4); }
+
+    #lock button {
+      background: none;
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 300;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      padding: 0.8rem 2.5rem;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    #lock button:hover { background: var(--gold); color: var(--deep); }
+
+    #lock .hint {
+      position: absolute;
+      bottom: 2rem;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      color: rgba(201,169,110,0.3);
+    }
+
+    /* ── HERO ── */
+    #hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      position: relative;
+      padding: 4rem 2rem;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 20% 10%, rgba(240,200,184,0.35) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 80% at 80% 90%, rgba(201,169,110,0.2) 0%, transparent 60%),
+        var(--cream);
+      z-index: 0;
+    }
+
+    /* diagonal gold line */
+    .hero-bg::after {
+      content: '';
+      position: absolute;
+      top: 0; right: 15%;
+      width: 1px; height: 100%;
+      background: linear-gradient(to bottom, transparent, var(--gold-light), transparent);
+      opacity: 0.6;
+    }
+
+    .badge {
+      position: relative; z-index: 1;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.6rem;
+      font-weight: 300;
+      letter-spacing: 0.5em;
+      text-transform: uppercase;
+      color: var(--rose);
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 1s 0.3s forwards;
+    }
+
+    .hero-eyebrow {
+      position: relative; z-index: 1;
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: clamp(1rem, 2.5vw, 1.3rem);
+      color: var(--rose);
+      margin-bottom: 1rem;
+      opacity: 0;
+      animation: fadeUp 1s 0.5s forwards;
+    }
+
+    h1 {
+      position: relative; z-index: 1;
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(3rem, 10vw, 7rem);
+      font-weight: 700;
+      line-height: 1;
+      text-align: center;
+      color: var(--deep);
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 1s 0.7s forwards;
+    }
+
+    h1 em {
+      display: block;
+      font-style: italic;
+      color: var(--rose);
+      font-size: 0.7em;
+    }
+
+    .divider {
+      position: relative; z-index: 1;
+      display: flex; align-items: center; gap: 1rem;
+      margin: 1.5rem 0 2rem;
+      opacity: 0;
+      animation: fadeUp 1s 0.9s forwards;
+    }
+    .divider span { color: var(--gold); font-size: 1.2rem; }
+    .divider::before, .divider::after {
+      content: '';
+      width: 60px; height: 1px;
+      background: linear-gradient(to right, transparent, var(--gold));
+    }
+    .divider::after { transform: scaleX(-1); }
+
+    .hero-sub {
+      position: relative; z-index: 1;
+      font-size: clamp(1.1rem, 3vw, 1.5rem);
+      font-style: italic;
+      color: var(--text);
+      opacity: 0.75;
+      text-align: center;
+      max-width: 500px;
+      line-height: 1.7;
+      margin-bottom: 3rem;
+      animation: fadeUp 1s 1.1s forwards;
+      opacity: 0;
+    }
+
+    .scroll-cue {
+      position: relative; z-index: 1;
+      display: flex; flex-direction: column;
+      align-items: center; gap: 0.5rem;
+      opacity: 0;
+      animation: fadeUp 1s 1.5s forwards;
+    }
+    .scroll-cue span {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.6rem;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+    .scroll-cue .arrow {
+      width: 1px; height: 40px;
+      background: linear-gradient(to bottom, var(--gold), transparent);
+      animation: arrowPulse 2s ease-in-out infinite;
+    }
+    @keyframes arrowPulse { 0%,100%{opacity:1;transform:scaleY(1)} 50%{opacity:0.4;transform:scaleY(0.7)} }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── BANNER STRIP ── */
+    .ticker-wrap {
+      background: var(--deep);
+      padding: 1rem 0;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+    .ticker {
+      display: inline-block;
+      animation: ticker 18s linear infinite;
+    }
+    .ticker span {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.65rem;
+      font-weight: 200;
+      letter-spacing: 0.5em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-right: 4rem;
+    }
+    .ticker span.dot { color: var(--rose); margin-right: 4rem; }
+    @keyframes ticker { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+    /* ── VIDEO SECTION ── */
+    #video-section {
+      padding: 6rem 2rem;
+      display: flex; flex-direction: column;
+      align-items: center;
+      position: relative;
+      background:
+        radial-gradient(ellipse 100% 60% at 50% 50%, rgba(201,169,110,0.08) 0%, transparent 70%),
+        var(--cream);
+    }
+
+    .section-label {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.6rem;
+      letter-spacing: 0.5em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1rem;
+    }
+
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      text-align: center;
+      color: var(--deep);
+      margin-bottom: 0.5rem;
+    }
+
+    .section-title em {
+      font-style: italic;
+      color: var(--rose);
+    }
+
+    .section-sub {
+      font-size: 1.1rem;
+      font-style: italic;
+      color: rgba(58,37,32,0.6);
+      margin-bottom: 3rem;
+    }
+
+    .video-frame {
+      position: relative;
+      width: 100%;
+      max-width: 800px;
+      border-radius: 2px;
+      overflow: hidden;
+      box-shadow: 0 30px 80px rgba(42,26,21,0.2), 0 0 0 1px rgba(201,169,110,0.3);
+    }
+
+    .video-frame::before {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      border: 1px solid var(--gold-light);
+      z-index: 1;
+      pointer-events: none;
+      border-radius: 2px;
+    }
+
+    /* corner decorations */
+    .video-frame::after {
+      content: '';
+      position: absolute;
+      top: 12px; left: 12px; right: 12px; bottom: 12px;
+      border: 1px solid rgba(201,169,110,0.2);
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .video-frame video,
+    .video-frame iframe {
+      width: 100%;
+      display: block;
+      aspect-ratio: 16/9;
+      object-fit: cover;
+      background: var(--deep);
+    }
+
+    .video-placeholder {
+      width: 100%;
+      aspect-ratio: 16/9;
+      background: linear-gradient(135deg, #1a0f0b 0%, #2a1a15 100%);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 1rem;
+    }
+    .video-placeholder .play-icon {
+      font-size: 3.5rem;
+      opacity: 0.6;
+    }
+    .video-placeholder p {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.3em;
+      color: var(--gold);
+      opacity: 0.6;
+      text-transform: uppercase;
+    }
+
+    /* ── DETAILS SECTION ── */
+    #details {
+      padding: 6rem 2rem;
+      background: var(--deep);
+      position: relative;
+      overflow: hidden;
+    }
+
+    #details::before {
+      content: '';
+      position: absolute;
+      top: -1px; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--gold), transparent);
+    }
+
+    .details-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 2px;
+    }
+
+    @media (max-width: 600px) {
+      .details-inner { grid-template-columns: 1fr; }
+    }
+
+    .detail-card {
+      padding: 3rem 2rem;
+      border: 1px solid rgba(201,169,110,0.15);
+      text-align: center;
+      position: relative;
+      transition: border-color 0.3s;
+    }
+    .detail-card:hover { border-color: rgba(201,169,110,0.4); }
+
+    .detail-icon { font-size: 2rem; margin-bottom: 1.5rem; }
+
+    .detail-label {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.55rem;
+      letter-spacing: 0.5em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.8rem;
+    }
+
+    .detail-value {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      color: var(--cream);
+      line-height: 1.3;
+    }
+
+    .detail-note {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 0.95rem;
+      color: rgba(253,248,242,0.4);
+      margin-top: 0.5rem;
+    }
+
+    /* section header on dark */
+    #details .section-label { color: var(--gold); }
+    #details .section-title { color: var(--cream); text-align: center; margin-bottom: 0.5rem; }
+    #details .section-sub { color: rgba(253,248,242,0.5); text-align: center; margin-bottom: 3rem; }
+    #details .section-header { text-align: center; margin-bottom: 3rem; }
+
+    /* ── MESSAGE SECTION ── */
+    #message {
+      padding: 7rem 2rem;
+      display: flex; flex-direction: column;
+      align-items: center;
+      background:
+        radial-gradient(ellipse 80% 80% at 50% 50%, rgba(240,200,184,0.2) 0%, transparent 70%),
+        var(--cream);
+    }
+
+    .letter {
+      max-width: 600px;
+      text-align: center;
+    }
+
+    .letter .big-quote {
+      font-family: 'Playfair Display', serif;
+      font-size: 8rem;
+      color: var(--blush);
+      line-height: 0.5;
+      margin-bottom: 1rem;
+      display: block;
+      opacity: 0.5;
+    }
+
+    .letter p {
+      font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+      line-height: 1.9;
+      color: var(--text);
+      margin-bottom: 1.5rem;
+    }
+
+    .letter .signature {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 2rem;
+      color: var(--rose);
+      margin-top: 2rem;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--deep);
+      padding: 2.5rem;
+      text-align: center;
+    }
+    footer p {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.6rem;
+      letter-spacing: 0.4em;
+      color: rgba(201,169,110,0.3);
+      text-transform: uppercase;
+    }
+    footer .hearts {
+      font-size: 1rem;
+      color: var(--rose);
+      margin-top: 0.5rem;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    /* ── CONFETTI burst ── */
+    #confetti-canvas {
+      position: fixed; inset: 0;
+      pointer-events: none;
+      z-index: 200;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Floating petals -->
+  <div id="particles"></div>
+
+  <!-- Confetti canvas -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <!-- ── LOCK SCREEN ── -->
+  <div id="lock">
+    <div class="lock-heart">💕</div>
+    <p>This page is just for you, my love</p>
+    <input type="password" id="password-input" placeholder="enter the password" maxlength="20"/>
+    <button onclick="unlock()">Open ✦</button>
+    <span class="hint">Hint: the password is your name 🌹</span>
+  </div>
+
+  <!-- ── HERO ── -->
+  <section id="hero">
+    <div class="hero-bg"></div>
+    <p class="badge">✦ A Very Special Announcement ✦</p>
+    <p class="hero-eyebrow">You & Me, Together</p>
+    <h1>Anniversary<em>Trip</em></h1>
+    <div class="divider"><span>✦</span></div>
+    <p class="hero-sub">I've been keeping a secret. And it's time you finally knew…</p>
+    <div class="scroll-cue">
+      <span>Scroll to reveal</span>
+      <div class="arrow"></div>
+    </div>
+  </section>
+
+  <!-- ── TICKER ── -->
+  <div class="ticker-wrap">
+    <div class="ticker">
+      <span>Anniversary Trip</span><span class="dot">✦</span>
+      <span>Just the Two of Us</span><span class="dot">✦</span>
+      <span>A Dream Come True</span><span class="dot">✦</span>
+      <span>You & Me Always</span><span class="dot">✦</span>
+      <span>Anniversary Trip</span><span class="dot">✦</span>
+      <span>Just the Two of Us</span><span class="dot">✦</span>
+      <span>A Dream Come True</span><span class="dot">✦</span>
+      <span>You & Me Always</span><span class="dot">✦</span>
+    </div>
+  </div>
+
+  <!-- ── VIDEO SECTION ── -->
+  <section id="video-section">
+    <p class="section-label">✦ Watch This ✦</p>
+    <h2 class="section-title">A Message <em>From My Heart</em></h2>
+    <p class="section-sub">I made this just for you.</p>
+
+    <div class="video-frame">
+      <!--
+        ╔══════════════════════════════════════════════════════════╗
+        ║  REPLACE THIS with your video. Two options:             ║
+        ║                                                          ║
+        ║  OPTION A — Local video file:                            ║
+        ║  Upload the video to the same folder as this HTML,      ║
+        ║  then replace the src below with the filename.           ║
+        ║                                                          ║
+        ║  <video controls autoplay>                              ║
+        ║    <source src="our-story.mp4" type="video/mp4">        ║
+        ║  </video>                                                ║
+        ║                                                          ║
+        ║  OPTION B — YouTube / Vimeo embed:                       ║
+        ║  Replace the <div class="video-placeholder"> below      ║
+        ║  with an <iframe> embed code from YouTube.               ║
+        ╚══════════════════════════════════════════════════════════╝
+      -->
+
+      <!-- PLACEHOLDER — remove this block when you add your video -->
+      <div class="video-placeholder">
+        <div class="play-icon">▶</div>
+        <p>Your video goes here</p>
+      </div>
+
+      <!-- LOCAL VIDEO EXAMPLE (uncomment & edit src):
+      <video controls>
+        <source src="our-story.mp4" type="video/mp4">
+      </video>
+      -->
+
+      <!-- YOUTUBE EMBED EXAMPLE (uncomment & paste your ID):
+      <iframe src="https://www.youtube.com/embed/YOUR_VIDEO_ID"
+              frameborder="0" allowfullscreen
+              allow="autoplay; encrypted-media">
+      </iframe>
+      -->
+    </div>
+  </section>
+
+  <!-- ── TRIP DETAILS ── -->
+  <section id="details">
+    <div class="section-header">
+      <p class="section-label">✦ The Details ✦</p>
+      <h2 class="section-title">Our <em style="color:var(--rose)">Getaway</em></h2>
+      <p class="section-sub">Everything is already taken care of, my love.</p>
+    </div>
+
+    <div class="details-inner">
+      <div class="detail-card">
+        <div class="detail-icon">✈️</div>
+        <p class="detail-label">Destination</p>
+        <p class="detail-value">Your Dream<br>Destination</p>
+        <p class="detail-note">← edit this</p>
+      </div>
+      <div class="detail-card">
+        <div class="detail-icon">📅</div>
+        <p class="detail-label">When</p>
+        <p class="detail-value">Month DD–DD<br>Year</p>
+        <p class="detail-note">← edit this</p>
+      </div>
+      <div class="detail-card">
+        <div class="detail-icon">🏨</div>
+        <p class="detail-label">Staying At</p>
+        <p class="detail-value">Your Hotel<br>Name</p>
+        <p class="detail-note">← edit this</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── LOVE LETTER ── -->
+  <section id="message">
+    <div class="letter">
+      <span class="big-quote">"</span>
+      <p>
+        Every moment with you is a gift I never want to stop unwrapping.
+        This trip is my way of saying thank you — for your laugh,
+        your warmth, and every ordinary day you've made extraordinary.
+      </p>
+      <p>
+        I can't wait to explore somewhere new with my favourite person in the world.
+        Pack your bags, my love. Adventure awaits us. 🌍
+      </p>
+      <!--  ← Change "Your Name" below  -->
+      <p class="signature">— Your Name 💕</p>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ── -->
+  <footer>
+    <p>Made with love, just for you</p>
+    <p class="hearts">♥ ♥ ♥</p>
+  </footer>
+
+  <script>
+    /* ── PASSWORD LOCK ── */
+    // Change "yourname" below to whatever password you want (lowercase recommended)
+    const PASSWORD = "yourname";
+
+    document.getElementById('password-input').addEventListener('keydown', e => {
+      if (e.key === 'Enter') unlock();
+    });
+
+    function unlock() {
+      const val = document.getElementById('password-input').value.trim().toLowerCase();
+      if (val === PASSWORD) {
+        document.getElementById('lock').classList.add('hidden');
+        launchConfetti();
+      } else {
+        const input = document.getElementById('password-input');
+        input.style.borderBottomColor = '#c97b6e';
+        input.value = '';
+        input.placeholder = 'try again, love ♡';
+        setTimeout(() => {
+          input.style.borderBottomColor = '';
+          input.placeholder = 'enter the password';
+        }, 2000);
+      }
+    }
+
+    /* ── CONFETTI ── */
+    function launchConfetti() {
+      const canvas = document.getElementById('confetti-canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const colors = ['#f0c8b8','#c97b6e','#c9a96e','#e8d4a8','#fdf8f2'];
+      const pieces = Array.from({length: 120}, () => ({
+        x: Math.random() * canvas.width,
+        y: Math.random() * -canvas.height,
+        r: Math.random() * 6 + 4,
+        c: colors[Math.floor(Math.random() * colors.length)],
+        vx: (Math.random() - 0.5) * 3,
+        vy: Math.random() * 4 + 2,
+        rot: Math.random() * 360,
+        vr: (Math.random() - 0.5) * 6,
+        shape: Math.random() > 0.5 ? 'circle' : 'rect',
+      }));
+
+      let frame = 0;
+      function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        pieces.forEach(p => {
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate(p.rot * Math.PI / 180);
+          ctx.fillStyle = p.c;
+          if (p.shape === 'circle') {
+            ctx.beginPath(); ctx.arc(0, 0, p.r, 0, Math.PI * 2); ctx.fill();
+          } else {
+            ctx.fillRect(-p.r, -p.r/2, p.r*2, p.r);
+          }
+          ctx.restore();
+          p.x += p.vx; p.y += p.vy; p.rot += p.vr;
+          p.vy += 0.05;
+        });
+        frame++;
+        if (frame < 200) requestAnimationFrame(draw);
+        else { ctx.clearRect(0, 0, canvas.width, canvas.height); }
+      }
+      draw();
+    }
+
+    /* ── FLOATING PETALS ── */
+    const container = document.getElementById('particles');
+    for (let i = 0; i < 18; i++) {
+      const p = document.createElement('div');
+      p.className = 'petal';
+      const colors = ['#f0c8b8','#c97b6e','#e8d4a8'];
+      p.style.cssText = `
+        left: ${Math.random()*100}%;
+        top: ${Math.random()*100}%;
+        background: ${colors[Math.floor(Math.random()*colors.length)]};
+        width: ${Math.random()*8+4}px;
+        height: ${Math.random()*8+4}px;
+        animation-duration: ${Math.random()*8+8}s;
+        animation-delay: ${Math.random()*10}s;
+      `;
+      container.appendChild(p);
+    }
+  </script>
+</body>
+</html>
