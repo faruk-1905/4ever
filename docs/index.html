@@ -241,28 +241,43 @@
       to   { opacity: 1; transform: translateY(0); }
     }
 
-    /* ── BANNER STRIP ── */
+    /* ── TICKER — seamless infinite loop ── */
     .ticker-wrap {
       background: var(--deep);
       padding: 1rem 0;
       overflow: hidden;
       white-space: nowrap;
     }
-    .ticker {
-      display: inline-block;
-      animation: ticker 18s linear infinite;
+    /* The track holds two identical groups side by side.
+       We animate it sliding left by exactly 50% (= one group width),
+       then it snaps back to 0 — perfectly seamless. */
+    .ticker-track {
+      display: flex;
+      width: max-content;
+      animation: ticker 20s linear infinite;
     }
-    .ticker span {
+    .ticker-track:hover { animation-play-state: paused; }
+    @keyframes ticker {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .ticker-group {
+      display: flex;
+      align-items: center;
+    }
+    .ticker-group span {
       font-family: 'Montserrat', sans-serif;
       font-size: 0.65rem;
       font-weight: 200;
       letter-spacing: 0.5em;
       text-transform: uppercase;
       color: var(--gold);
-      margin-right: 4rem;
+      padding: 0 3rem;
     }
-    .ticker span.dot { color: var(--rose); margin-right: 4rem; }
-    @keyframes ticker { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+    .ticker-group .dot {
+      color: var(--rose);
+      padding: 0 1rem;
+    }
 
     /* ── VIDEO SECTION ── */
     #video-section {
@@ -339,27 +354,6 @@
       aspect-ratio: 16/9;
       object-fit: cover;
       background: var(--deep);
-    }
-
-    .video-placeholder {
-      width: 100%;
-      aspect-ratio: 16/9;
-      background: linear-gradient(135deg, #1a0f0b 0%, #2a1a15 100%);
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      gap: 1rem;
-    }
-    .video-placeholder .play-icon {
-      font-size: 3.5rem;
-      opacity: 0.6;
-    }
-    .video-placeholder p {
-      font-family: 'Montserrat', sans-serif;
-      font-size: 0.7rem;
-      letter-spacing: 0.3em;
-      color: var(--gold);
-      opacity: 0.6;
-      text-transform: uppercase;
     }
 
     /* ── DETAILS SECTION ── */
@@ -499,10 +493,7 @@
 </head>
 <body>
 
-  <!-- Floating petals -->
   <div id="particles"></div>
-
-  <!-- Confetti canvas -->
   <canvas id="confetti-canvas"></canvas>
 
   <!-- ── LOCK SCREEN ── -->
@@ -530,15 +521,21 @@
 
   <!-- ── TICKER ── -->
   <div class="ticker-wrap">
-    <div class="ticker">
-      <span>4th Anniversary</span><span class="dot">✦</span>
-      <span>One Team</span><span class="dot">✦</span>
-      <span>Janouskha & Faruk</span><span class="dot">✦</span>
-      <span>Soulmates</span><span class="dot">✦</span>
-      <span>4th Anniversary</span><span class="dot">✦</span>
-      <span>One Team</span><span class="dot">✦</span>
-      <span>Janouskha & Faruk</span><span class="dot">✦</span>
-      <span>Soulmates</span><span class="dot">✦</span>
+    <div class="ticker-track">
+      <!-- Group 1 -->
+      <div class="ticker-group">
+        <span>4th Anniversary</span><span class="dot">✦</span>
+        <span>One Team</span><span class="dot">✦</span>
+        <span>Janoushka & Faruk</span><span class="dot">✦</span>
+        <span>Soulmates</span><span class="dot">✦</span>
+      </div>
+      <!-- Group 2 — exact duplicate for seamless loop -->
+      <div class="ticker-group">
+        <span>4th Anniversary</span><span class="dot">✦</span>
+        <span>One Team</span><span class="dot">✦</span>
+        <span>Janoushka & Faruk</span><span class="dot">✦</span>
+        <span>Soulmates</span><span class="dot">✦</span>
+      </div>
     </div>
   </div>
 
@@ -549,24 +546,6 @@
     <p class="section-sub">I made this just for you, Janoushka.</p>
 
     <div class="video-frame">
-      <!--
-        ╔══════════════════════════════════════════════════════════════╗
-        ║  HOW TO ADD YOUR VIDEO                                       ║
-        ║                                                              ║
-        ║  Place your video file inside the  /media  folder,          ║
-        ║  then choose one of the options below:                       ║
-        ║                                                              ║
-        ║  OPTION A — Local file from /media folder:                   ║
-        ║  Remove the placeholder div below and uncomment             ║
-        ║  the <video> block, replacing "your-video.mp4"              ║
-        ║  with your actual filename.                                  ║
-        ║                                                              ║
-        ║  OPTION B — YouTube embed:                                   ║
-        ║  Remove the placeholder div and uncomment the <iframe>,     ║
-        ║  replacing YOUR_VIDEO_ID with the ID from the YouTube URL.  ║
-        ╚══════════════════════════════════════════════════════════════╝
-      -->
-
       <video controls>
         <source src="../media/video1.mov" type="video/quicktime">
         <source src="../media/video1.mov" type="video/mp4">
@@ -586,7 +565,7 @@
       <div class="detail-card">
         <div class="detail-icon">✈️</div>
         <p class="detail-label">Destination</p>
-        <p class="detail-value">Our first trip location<br></p>
+        <p class="detail-value">Our first trip<br>location</p>
         <p class="detail-note">Amsterdam</p>
       </div>
       <div class="detail-card">
@@ -628,7 +607,6 @@
   </footer>
 
   <script>
-    /* ── PASSWORD — her name in lowercase ── */
     const PASSWORD = "janoushka";
 
     document.getElementById('password-input').addEventListener('keydown', e => {
@@ -652,13 +630,11 @@
       }
     }
 
-    /* ── CONFETTI ── */
     function launchConfetti() {
       const canvas = document.getElementById('confetti-canvas');
       const ctx = canvas.getContext('2d');
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
-
       const colors = ['#f0c8b8','#c97b6e','#c9a96e','#e8d4a8','#fdf8f2'];
       const pieces = Array.from({length: 120}, () => ({
         x: Math.random() * canvas.width,
@@ -671,7 +647,6 @@
         vr: (Math.random() - 0.5) * 6,
         shape: Math.random() > 0.5 ? 'circle' : 'rect',
       }));
-
       let frame = 0;
       function draw() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -691,12 +666,11 @@
         });
         frame++;
         if (frame < 200) requestAnimationFrame(draw);
-        else { ctx.clearRect(0, 0, canvas.width, canvas.height); }
+        else ctx.clearRect(0, 0, canvas.width, canvas.height);
       }
       draw();
     }
 
-    /* ── FLOATING PETALS ── */
     const container = document.getElementById('particles');
     for (let i = 0; i < 18; i++) {
       const p = document.createElement('div');
