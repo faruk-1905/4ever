@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>April 18 — Something's Coming</title>
+  <title>April 18 - Something is Coming</title>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -15,28 +15,46 @@
       --gold-light: #e8c07a;
       --rust: #b84a2e;
       --muted: #7a6e5f;
-      --card: #faf7f2;
+      --card: rgba(250, 247, 242, 0.88);
     }
 
     html, body {
       min-height: 100vh;
-      background-color: var(--cream);
       font-family: 'DM Sans', sans-serif;
       color: var(--ink);
       overflow-x: hidden;
     }
 
-    /* === NOISE TEXTURE OVERLAY === */
-    body::before {
-      content: '';
+    /* === BACKGROUND IMAGE ===
+       Place background.jpg in the same folder as this HTML file.
+       On GitHub Pages both files must be in the same directory.        */
+    .bg {
       position: fixed;
       inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-      pointer-events: none;
-      z-index: 0;
+      background-image: url('background.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      z-index: -2;
     }
 
-    /* === DECORATIVE LINES === */
+    /* Dark overlay so text stays readable over any photo */
+    .bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(20, 14, 6, 0.48);
+    }
+
+    /* Fallback colour shown while background.jpg loads */
+    .bg-fallback {
+      position: fixed;
+      inset: 0;
+      background-color: #2b1f10;
+      z-index: -3;
+    }
+
+    /* === TOP ACCENT BAR === */
     .line-top {
       position: fixed;
       top: 0; left: 0; right: 0;
@@ -64,12 +82,11 @@
     }
 
     .eyebrow {
-      font-family: 'DM Sans', sans-serif;
       font-size: 11px;
       font-weight: 500;
       letter-spacing: 0.25em;
       text-transform: uppercase;
-      color: var(--gold);
+      color: var(--gold-light);
       margin-bottom: 18px;
     }
 
@@ -78,23 +95,24 @@
       font-size: clamp(2.6rem, 6vw, 4.2rem);
       line-height: 1.15;
       font-weight: 700;
-      color: var(--ink);
+      color: #fff;
       margin-bottom: 14px;
+      text-shadow: 0 2px 20px rgba(0,0,0,0.5);
     }
 
     h1 em {
       font-style: italic;
-      color: var(--gold);
+      color: var(--gold-light);
     }
 
     .subtitle {
       font-size: 15px;
-      color: var(--muted);
+      color: rgba(255,255,255,0.7);
       font-weight: 300;
       letter-spacing: 0.02em;
     }
 
-    /* === DIVIDER === */
+    /* === ORNAMENT DIVIDER === */
     .ornament {
       display: flex;
       align-items: center;
@@ -128,7 +146,7 @@
       font-weight: 500;
       letter-spacing: 0.22em;
       text-transform: uppercase;
-      color: var(--muted);
+      color: rgba(255,255,255,0.65);
       margin-bottom: 28px;
     }
 
@@ -141,13 +159,15 @@
 
     .time-unit {
       background: var(--card);
-      border: 1px solid rgba(201,151,74,0.2);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(201,151,74,0.25);
       border-radius: 4px;
       padding: 28px 12px 20px;
       text-align: center;
       position: relative;
       overflow: hidden;
-      transition: border-color 0.3s ease;
+      transition: border-color 0.3s ease, transform 0.2s ease;
     }
 
     .time-unit::before {
@@ -159,7 +179,8 @@
     }
 
     .time-unit:hover {
-      border-color: rgba(201,151,74,0.5);
+      border-color: rgba(201,151,74,0.6);
+      transform: translateY(-2px);
     }
 
     .time-number {
@@ -187,7 +208,7 @@
       font-family: 'Playfair Display', serif;
       font-style: italic;
       font-size: 15px;
-      color: var(--muted);
+      color: rgba(255,255,255,0.6);
       margin-top: 18px;
     }
 
@@ -207,24 +228,26 @@
       font-family: 'Playfair Display', serif;
       font-size: 1.9rem;
       font-weight: 400;
+      color: #fff;
       margin-bottom: 8px;
+      text-shadow: 0 2px 12px rgba(0,0,0,0.35);
     }
 
     .form-header p {
       font-size: 14px;
-      color: var(--muted);
+      color: rgba(255,255,255,0.6);
     }
 
     form {
       background: var(--card);
-      border: 1px solid rgba(201,151,74,0.15);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(201,151,74,0.2);
       border-radius: 6px;
       padding: 44px 48px;
     }
 
-    .field {
-      margin-bottom: 32px;
-    }
+    .field { margin-bottom: 32px; }
 
     label {
       display: block;
@@ -241,30 +264,28 @@
       color: var(--muted);
       margin-bottom: 10px;
       font-weight: 300;
-      letter-spacing: 0.01em;
     }
 
     input[type="text"],
-    input[type="email"],
     textarea {
       width: 100%;
-      background: var(--cream);
-      border: 1px solid rgba(201,151,74,0.25);
+      background: rgba(245, 240, 232, 0.75);
+      border: 1px solid rgba(201,151,74,0.3);
       border-radius: 3px;
       padding: 14px 18px;
       font-family: 'DM Sans', sans-serif;
       font-size: 15px;
       color: var(--ink);
       outline: none;
-      transition: border-color 0.25s, box-shadow 0.25s;
+      transition: border-color 0.25s, box-shadow 0.25s, background 0.25s;
       resize: none;
     }
 
     input[type="text"]:focus,
-    input[type="email"]:focus,
     textarea:focus {
       border-color: var(--gold);
-      box-shadow: 0 0 0 3px rgba(201,151,74,0.1);
+      box-shadow: 0 0 0 3px rgba(201,151,74,0.12);
+      background: rgba(245, 240, 232, 0.97);
     }
 
     textarea { min-height: 130px; line-height: 1.6; }
@@ -295,7 +316,6 @@
     }
 
     .submit-btn:active { transform: translateY(0); }
-
     .submit-btn svg { transition: transform 0.2s; }
     .submit-btn:hover svg { transform: translateX(4px); }
 
@@ -305,7 +325,6 @@
       text-align: center;
       padding: 50px 20px;
     }
-
     .success-msg.visible { display: block; }
 
     .success-icon {
@@ -314,7 +333,8 @@
       background: linear-gradient(135deg, var(--gold), var(--rust));
       display: flex; align-items: center; justify-content: center;
       margin: 0 auto 20px;
-      font-size: 24px;
+      font-size: 22px;
+      color: #fff;
     }
 
     .success-msg h3 {
@@ -322,7 +342,6 @@
       font-size: 1.5rem;
       margin-bottom: 10px;
     }
-
     .success-msg p { color: var(--muted); font-size: 14px; }
 
     /* === FOOTER === */
@@ -330,7 +349,7 @@
       text-align: center;
       margin-top: 70px;
       font-size: 12px;
-      color: var(--muted);
+      color: rgba(255,255,255,0.4);
       opacity: 0;
       animation: fadeUp 0.9s ease forwards 0.8s;
     }
@@ -342,7 +361,7 @@
 
     @keyframes pulse {
       0%, 100% { opacity: 1; }
-      50% { opacity: 0.5; }
+      50% { opacity: 0.4; }
     }
 
     .live-dot {
@@ -351,6 +370,7 @@
       border-radius: 50%;
       background: var(--rust);
       margin-right: 6px;
+      vertical-align: middle;
       animation: pulse 1.5s ease-in-out infinite;
     }
 
@@ -363,6 +383,11 @@
   </style>
 </head>
 <body>
+
+  <!-- Background layers -->
+  <div class="bg-fallback"></div>
+  <div class="bg"></div>
+
   <div class="line-top"></div>
 
   <div class="page">
@@ -379,26 +404,26 @@
 
     <!-- COUNTDOWN -->
     <div class="countdown-section">
-      <p class="countdown-label"><span class="live-dot"></span>Counting down to April 18th</p>
+      <p class="countdown-label"><span class="live-dot"></span>Counting down to April 18th, 2026</p>
       <div class="countdown">
         <div class="time-unit">
-          <div class="time-number" id="days">00</div>
+          <div class="time-number" id="days">--</div>
           <div class="time-word">Days</div>
         </div>
         <div class="time-unit">
-          <div class="time-number" id="hours">00</div>
+          <div class="time-number" id="hours">--</div>
           <div class="time-word">Hours</div>
         </div>
         <div class="time-unit">
-          <div class="time-number" id="minutes">00</div>
+          <div class="time-number" id="minutes">--</div>
           <div class="time-word">Minutes</div>
         </div>
         <div class="time-unit">
-          <div class="time-number" id="seconds">00</div>
+          <div class="time-number" id="seconds">--</div>
           <div class="time-word">Seconds</div>
         </div>
       </div>
-      <p class="date-display">Friday, April 18 — 2025</p>
+      <p class="date-display">Saturday, April 18 - 2026</p>
     </div>
 
     <!-- ORNAMENT -->
@@ -408,7 +433,7 @@
     <div class="form-section">
       <div class="form-header">
         <h2>Share your thoughts</h2>
-        <p>Tell us what you're hoping for — we'd love to know.</p>
+        <p>Tell us what you're hoping for - we'd love to know.</p>
       </div>
 
       <form id="expectationForm">
@@ -431,19 +456,22 @@
 
         <button type="submit" class="submit-btn">
           Send my thoughts
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"/>
+            <polyline points="12 5 19 12 12 19"/>
+          </svg>
         </button>
 
         <div class="success-msg" id="successMsg">
-          <div class="success-icon">✦</div>
+          <div class="success-icon">&#10022;</div>
           <h3>Thank you!</h3>
-          <p>Your thoughts have been sent to <strong>faruk2011@live.be</strong>.<br/>We'll see you on April 18.</p>
+          <p>Your thoughts have been sent.<br/>We'll see you on April 18.</p>
         </div>
       </form>
     </div>
 
     <div class="footer">
-      <p>April 18, 2025 &nbsp;·&nbsp; Something unforgettable awaits</p>
+      <p>April 18, 2026 &nbsp; Something unforgettable awaits</p>
     </div>
 
   </div>
@@ -451,23 +479,23 @@
   <script>
     // === COUNTDOWN TIMER ===
     function updateCountdown() {
-      const target = new Date('2025-04-18T00:00:00');
-      const now = new Date();
-      const diff = target - now;
+      var target = new Date('2026-04-18T00:00:00');
+      var now    = new Date();
+      var diff   = target.getTime() - now.getTime();
 
       if (diff <= 0) {
-        document.getElementById('days').textContent = '00';
-        document.getElementById('hours').textContent = '00';
+        document.getElementById('days').textContent    = '00';
+        document.getElementById('hours').textContent   = '00';
         document.getElementById('minutes').textContent = '00';
         document.getElementById('seconds').textContent = '00';
-        document.querySelector('.countdown-label').innerHTML = '✦ April 18 has arrived!';
+        document.querySelector('.countdown-label').textContent = 'April 18 has arrived!';
         return;
       }
 
-      const days    = Math.floor(diff / (1000 * 60 * 60 * 24));
-      const hours   = Math.floor((diff / (1000 * 60 * 60)) % 24);
-      const minutes = Math.floor((diff / (1000 * 60)) % 60);
-      const seconds = Math.floor((diff / 1000) % 60);
+      var days    = Math.floor(diff / (1000 * 60 * 60 * 24));
+      var hours   = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      var minutes = Math.floor((diff / (1000 * 60)) % 60);
+      var seconds = Math.floor((diff / 1000) % 60);
 
       document.getElementById('days').textContent    = String(days).padStart(2, '0');
       document.getElementById('hours').textContent   = String(hours).padStart(2, '0');
@@ -478,30 +506,30 @@
     updateCountdown();
     setInterval(updateCountdown, 1000);
 
-    // === FORM SUBMIT (mailto) ===
+    // === FORM SUBMIT - opens default mail client ===
     document.getElementById('expectationForm').addEventListener('submit', function(e) {
       e.preventDefault();
 
-      const name         = document.getElementById('name').value.trim();
-      const expectations = document.getElementById('expectations').value.trim();
-      const activity     = document.getElementById('activity').value.trim();
+      var name         = document.getElementById('name').value.trim();
+      var expectations = document.getElementById('expectations').value.trim();
+      var activity     = document.getElementById('activity').value.trim();
 
-      const subject = encodeURIComponent('April 18 — Expectations from ' + name);
-      const body    = encodeURIComponent(
+      var subject = encodeURIComponent('April 18 - Expectations from ' + name);
+      var body    = encodeURIComponent(
         'Name: ' + name + '\n\n' +
         'Expectations:\n' + expectations + '\n\n' +
         'Activity:\n' + activity
       );
 
-      const mailtoLink = `mailto:faruk2011@live.be?subject=${subject}&body=${body}`;
-      window.location.href = mailtoLink;
+      var recipient = 'faruk2011' + '@' + 'live.be';
+      window.location.href = 'mailto:' + recipient + '?subject=' + subject + '&body=' + body;
 
-      // Show success after short delay
-      setTimeout(() => {
-        document.getElementById('expectationForm').querySelector('.submit-btn').style.display = 'none';
+      setTimeout(function() {
+        document.querySelector('.submit-btn').style.display = 'none';
         document.getElementById('successMsg').classList.add('visible');
       }, 800);
     });
   </script>
+
 </body>
 </html>
